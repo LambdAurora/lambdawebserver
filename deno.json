@@ -1,0 +1,13 @@
+{
+  "tasks": {
+    "example_logger": "deno run --allow-net examples/logger.ts",
+    "example_proxy": "deno run --allow-net examples/proxy.ts"
+  },
+  "importMap": "./import_map.json",
+  "fmt": {
+    "options": {
+      "useTabs": true
+    }
+  },
+  "lock": false
+}
