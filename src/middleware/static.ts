@@ -70,6 +70,9 @@ export function serve_files(root_path: string, options?: StaticFileServingOption
 	};
 	if (options) Object.assign(known_options, options);
 
+	// Important to not false-positive on the later normalize test.
+	root_path = path.normalize(root_path);
+
 	return async (context, next) => {
 		const accept_html = context.request.headers.get("accept")?.includes("text/html");
 		let file_path = decodeURIComponent(context.request.url.pathname);
