@@ -1,7 +1,8 @@
 {
   "tasks": {
     "example_logger": "deno run --allow-net examples/logger.ts",
-    "example_proxy": "deno run --allow-net examples/proxy.ts"
+    "example_proxy": "deno run --allow-net examples/proxy.ts",
+    "example_static": "deno run --allow-net --allow-read=examples examples/static.ts"
   },
   "importMap": "./import_map.json",
   "fmt": {

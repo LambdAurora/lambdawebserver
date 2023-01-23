@@ -17,3 +17,4 @@
 
 export * from "./logger.ts";
 export * from "./proxy.ts";
+export * from "./static.ts";

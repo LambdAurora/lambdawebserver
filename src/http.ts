@@ -26,4 +26,16 @@ export type HttpMethod =
 
 export const ALL_HTTP_METHODS: Readonly<HttpMethod[]> = Object.freeze(["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]);
 
+/**
+ * Returns the accepted encoding from the given headers.
+ *
+ * @param headers the HTTP headers
+ */
+export function get_accepted_encodings(headers: Headers): string[] {
+	const raw = headers.get("accept-encoding");
+
+	if (raw) return raw.split(", ");
+	else return [];
+}
+
 export { Status as HttpStatus } from "@std/http/http_status.ts";
