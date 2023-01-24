@@ -14,3 +14,7 @@
 
  - Fixed path normalization test not working
    with un-normalized root paths in static file serving middleware.
+
+### 1.1.2
+
+ - Fixed static file middleware not running next middleware if the file was not found.
