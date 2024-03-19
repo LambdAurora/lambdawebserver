@@ -38,4 +38,4 @@ export function get_accepted_encodings(headers: Headers): string[] {
 	else return [];
 }
 
-export { Status as HttpStatus } from "@std/http/http_status.ts";
+export { STATUS_CODE as HttpStatus } from "@std/http/status.ts";

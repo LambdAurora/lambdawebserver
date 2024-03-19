@@ -72,7 +72,7 @@ export class ProxyRoute {
 		const response = await fetch(target_url, {
 			headers: request_headers,
 			method: ctx.request.method,
-			body: ctx.request.hasBody ? ctx.request.originalRequest.getBody().body : undefined,
+			body: ctx.request.hasBody ? ctx.request.body.stream : undefined,
 			redirect: this.redirect_policy === "follow" ? "follow" : "manual"
 		});
 
@@ -112,7 +112,7 @@ export class ProxyRoute {
 
 	public middleware(): Middleware {
 		return async (ctx, next) => {
-			if (!this.methods.includes(ctx.request.method)) return await next();
+			if (!this.methods.includes(ctx.request.method as HttpMethod)) return await next();
 
 			const url_path = decodeURIComponent(ctx.request.url.pathname);
 			const found = this.get_target_path(url_path);
