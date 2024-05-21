@@ -1,23 +1,15 @@
 /*
- * Copyright (c) 2023 LambdAurora <email@lambdaurora.dev>
+ * Copyright 2024 LambdAurora <email@lambdaurora.dev>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This file is part of lambdawebserver.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import {compose, Middleware} from "@oak/middleware.ts";
-import {ALL_HTTP_METHODS, HttpMethod, HttpStatus} from "../http.ts";
-import {Context} from "@oak/context.ts";
+import { ALL_HTTP_METHODS, HttpMethod, HttpStatus } from "../http.ts";
+import { composeMiddleware, Context, Middleware } from "@oak/oak";
 
 /**
  * Represents the redirect policy for proxying.
@@ -37,14 +29,26 @@ export type ProxyRedirectPolicy = "forward" | "rewrite" | "follow";
  */
 export type ProxyPathMode = "single" | "root";
 
+/**
+ * Represents the proxy path matcher type.
+ */
 export type RoutePathMatcher = string | RegExp;
 
+/**
+ * Represents the options given to a proxy route.
+ */
 export interface ProxyRouteOptions {
 	path_mode?: ProxyPathMode;
 	exclude_paths?: RoutePathMatcher[];
 	redirect?: ProxyRedirectPolicy;
 }
 
+/**
+ * Represents a proxied route.
+ *
+ * @version 3.0.0
+ * @since 1.0.0
+ */
 export class ProxyRoute {
 	private readonly insensitive_path: string;
 	private readonly path_mode: ProxyPathMode = "single";
@@ -62,7 +66,7 @@ export class ProxyRoute {
 		this.redirect_policy = this.options?.redirect ? this.options.redirect : "follow";
 	}
 
-	private get_target_path(given: string) {
+	private get_target_path(given: string): string | null {
 		if (this.path_mode === "single") return this.insensitive_path === given.toLowerCase() ? "" : null;
 		else if (given.toLowerCase().startsWith(this.insensitive_path)) return given.substring(this.path.length);
 		else return null;
@@ -110,6 +114,11 @@ export class ProxyRoute {
 		}
 	}
 
+	/**
+	 * Returns the Oak middleware of this proxied route.
+	 *
+	 * @returns the Oak middleware
+	 */
 	public middleware(): Middleware {
 		return async (ctx, next) => {
 			if (!this.methods.includes(ctx.request.method as HttpMethod)) return await next();
@@ -150,6 +159,12 @@ export class ProxyRoute {
 	}
 }
 
+/**
+ * Represents a proxy router which is used to build the corresponding Oak middleware.
+ *
+ * @version 3.0.0
+ * @since 1.0.0
+ */
 export class ProxyRouter {
 	private routes: ProxyRoute[] = [];
 
@@ -159,9 +174,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @return this proxy router
 	 */
-	all(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public all(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(ALL_HTTP_METHODS, path, new URL(target), options));
 		return this;
 	}
@@ -172,9 +187,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @return this proxy router
 	 */
-	delete(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public delete(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["DELETE"], path, new URL(target), options));
 		return this;
 	}
@@ -185,9 +200,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @returns this proxy router
 	 */
-	get(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public get(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["GET"], path, new URL(target), options));
 		return this;
 	}
@@ -198,9 +213,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @returns this proxy router
 	 */
-	head(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public head(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["HEAD"], path, new URL(target), options));
 		return this;
 	}
@@ -211,9 +226,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @returns this proxy router
 	 */
-	options(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public options(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["OPTIONS"], path, new URL(target), options));
 		return this;
 	}
@@ -224,9 +239,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @returns this proxy router
 	 */
-	patch(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public patch(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["PATCH"], path, new URL(target), options));
 		return this;
 	}
@@ -237,9 +252,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @returns this proxy router
 	 */
-	post(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public post(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["POST"], path, new URL(target), options));
 		return this;
 	}
@@ -250,9 +265,9 @@ export class ProxyRouter {
 	 * @param path the path to proxy
 	 * @param target the proxy destination
 	 * @param options the proxy options
-	 * @return {ProxyRouter} `this`
+	 * @returns this proxy router
 	 */
-	put(path: string, target: URL | string, options?: ProxyRouteOptions) {
+	public put(path: string, target: URL | string, options?: ProxyRouteOptions): this {
 		this.routes.push(new ProxyRoute(["PUT"], path, new URL(target), options));
 		return this;
 	}
@@ -260,15 +275,15 @@ export class ProxyRouter {
 	/**
 	 * Returns the proxy middleware.
 	 *
-	 * @return the middleware
+	 * @returns the Oak middleware
 	 */
-	proxy(): Middleware {
+	public proxy(): Middleware {
 		if (this.routes.length === 0) {
 			throw new Error("No proxy routes have been specified.");
 		} else if (this.routes.length === 1) {
 			return this.routes[0].middleware();
 		} else {
-			return compose(this.routes.map(route => route.middleware()));
+			return composeMiddleware(this.routes.map(route => route.middleware()));
 		}
 	}
 }

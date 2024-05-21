@@ -23,3 +23,11 @@
 
 - Updated standard library to 0.220.1.
 - Updated oak to 14.2.0.
+
+## 3.0.0
+
+- Standardized project structure.
+- Complete documentation.
+- Use and publish to JSR.
+- Updated standatd library.
+- Updated oak to 16.0.0.

@@ -1,5 +1,5 @@
-import {Application, Router} from "@oak/mod.ts";
-import {LoggerMiddleware} from "../mod.ts";
+import { Application, Router } from "@oak/oak";
+import { LoggerMiddleware } from "../mod.ts";
 
 const router = new Router();
 router.get("/", (ctx) => {
@@ -18,4 +18,4 @@ app.use(new LoggerMiddleware().middleware());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({port: 8080});
+app.listen({ port: 8080 });

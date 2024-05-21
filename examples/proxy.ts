@@ -1,5 +1,5 @@
-import {Application, Router} from "@oak/mod.ts";
-import {LoggerMiddleware, ProxyRouter} from "../mod.ts";
+import { Application, Router } from "@oak/oak";
+import { LoggerMiddleware, ProxyRouter } from "../mod.ts";
 
 const router = new Router();
 router.get("/", (ctx) => {
@@ -17,7 +17,7 @@ const proxy = new ProxyRouter();
 
 proxy.all("/AurorasDecorations", "https://lambdaurora.dev/AurorasDecorations", {
 	path_mode: "root",
-	redirect: "rewrite"
+	redirect: "rewrite",
 });
 
 const app = new Application();
@@ -26,4 +26,4 @@ app.use(proxy.proxy());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({port: 8080});
+app.listen({ port: 8080 });

@@ -1,14 +1,54 @@
 {
-  "tasks": {
-    "example_logger": "deno run --allow-net examples/logger.ts",
-    "example_proxy": "deno run --allow-net examples/proxy.ts",
-    "example_static": "deno run --allow-net --allow-read=examples examples/static.ts"
-  },
-  "importMap": "./import_map.json",
-  "fmt": {
-    "options": {
-      "useTabs": true
-    }
-  },
-  "lock": false
+	"name": "@lambdaurora/lambdawebserver",
+	"version": "3.0.0",
+	"exports": "./mod.ts",
+	"tasks": {
+		"check": "deno lint && deno check mod.ts",
+		"example_logger": "deno run --allow-net examples/logger.ts",
+		"example_proxy": "deno run --allow-net examples/proxy.ts",
+		"example_static": "deno run --allow-net --allow-read=examples examples/static.ts"
+	},
+	"importMap": "./import_map.json",
+	"lint": {
+		"include": [
+			"./mod.ts",
+			"./lib/*.ts",
+			"./test/"
+		],
+		"exclude": [
+			"./dist/"
+		]
+	},
+	"fmt": {
+		"useTabs": true,
+		"lineWidth": 180,
+		"include": [
+			"./mod.ts",
+			"./lib/*.ts",
+			"./test/"
+		],
+		"exclude": [
+			"./dist/"
+		]
+	},
+	"test": {
+		"include": [
+			"./test/"
+		]
+	},
+	"publish": {
+		"include": [
+			"README.md",
+			"CHANGELOG.md",
+			"LICENSE",
+			"deno.json",
+			"import_map.json",
+			"mod.ts",
+			"lib/**"
+		],
+		"exclude": [
+			"./test/"
+		]
+	},
+	"lock": false
 }

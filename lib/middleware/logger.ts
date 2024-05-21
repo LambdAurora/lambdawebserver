@@ -1,23 +1,16 @@
 /*
- * Copyright (c) 2023 LambdAurora <email@lambdaurora.dev>
+ * Copyright 2024 LambdAurora <email@lambdaurora.dev>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This file is part of lambdawebserver.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import {bold, cyan, green, magenta, red, yellow} from "@std/fmt/colors.ts";
-import {format} from "@std/datetime/mod.ts";
-import {Middleware} from "@oak/mod.ts";
+import { bold, cyan, green, magenta, red, yellow } from "@std/fmt/colors";
+import { format } from "@std/datetime";
+import { Middleware } from "@oak/oak";
 
 /**
  * Represents a logger middleware which will log any request made to the web server.
@@ -27,10 +20,11 @@ export class LoggerMiddleware {
 
 	/**
 	 * Sets the date format to use or `null` to not have date display.
+	 *
 	 * @param format the format of the date to log, or `null` to not log date
-	 * @return `this`
+	 * @returns this logger middleware
 	 */
-	public with_date_format(format: string | null) {
+	public with_date_format(format: string | null): this {
 		this.date_format = format;
 		return this;
 	}
@@ -39,7 +33,7 @@ export class LoggerMiddleware {
 	 * Formats the given HTTP status as a printable string.
 	 *
 	 * @param status the HTTP status
-	 * @return a printable string
+	 * @returns a printable string
 	 */
 	format_status(status: number): string {
 		let color = red;
@@ -58,7 +52,7 @@ export class LoggerMiddleware {
 	/**
 	 * Returns the middleware of this logger.
 	 *
-	 * @return the middleware
+	 * @returns the Oak middleware
 	 */
 	public middleware(): Middleware {
 		return async (ctx, next) => {

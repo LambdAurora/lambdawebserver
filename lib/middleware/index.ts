@@ -8,11 +8,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * Represents the LambdaWebServer library, which offers various utilities for the Oak library.
- *
- * @module
- */
-
-export * from "./lib/http.ts";
-export * from "./lib/middleware/index.ts";
+export * from "./logger.ts";
+export * from "./proxy.ts";
+export * from "./static.ts";

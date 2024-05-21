@@ -1,26 +1,24 @@
 /*
- * Copyright (c) 2023 LambdAurora <email@lambdaurora.dev>
+ * Copyright 2024 LambdAurora <email@lambdaurora.dev>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This file is part of lambdawebserver.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-import {Middleware} from "@oak/middleware.ts";
-import {send} from "@oak/send.ts";
-import * as path from "@std/path/mod.ts";
+import { Middleware, send } from "@oak/oak";
+import * as path from "@std/path";
 
+/**
+ * Represents the file path mode.
+ */
 export type FilePathMode = "strict" | "redirect_to_html" | "serve_without_html_ext";
 
+/**
+ * Represents the option for the static file serving middleware.
+ */
 export interface StaticFileServingOptions {
 	/**
 	 * `true` if folder paths are accepted and redirect to their respective `index.html` files, or `false` otherwise.
@@ -47,13 +45,13 @@ export interface StaticFileServingOptions {
  *
  * @param root_path the root path where the files reside
  * @param options the serving options
- * @return {Middleware} the middleware
+ * @returns the middleware
  */
 export function serve_files(root_path: string, options?: StaticFileServingOptions): Middleware {
 	const known_options = {
 		folder_path_to_index: true,
 		file_path_without_html_ext: "redirect_to_html",
-		brotli: true
+		brotli: true,
 	};
 	if (options) Object.assign(known_options, options);
 
@@ -74,7 +72,7 @@ export function serve_files(root_path: string, options?: StaticFileServingOption
 		async function test_file(path: string) {
 			// Try opening the file.
 			try {
-				const file = await Deno.open(root_path + path, {read: true});
+				const file = await Deno.open(root_path + path, { read: true });
 				const stat = await file.stat();
 				file.close();
 
@@ -95,7 +93,7 @@ export function serve_files(root_path: string, options?: StaticFileServingOption
 		async function attempt_to_serve(p: string) {
 			await send(context, p, {
 				root: root_path,
-				brotli: known_options.brotli
+				brotli: known_options.brotli,
 			});
 		}
 
